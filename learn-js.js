@@ -64,7 +64,6 @@ const galleryItems = [
   },
 ];
 
-
 const refs = {
   gallery: document.querySelector('.js-gallery'),
   lightBox: document.querySelector('.lightbox'),
@@ -118,26 +117,7 @@ const onGalleryClick = (e) => {
   // console.log(newPicture);
 
 // Выход с помощью ESC или нажимая на overlay
-  const onKeyPress = (e) => {
-    if (e.key !== "Escape" && e.key !== "ArrowRight" && e.key !== "ArrowLeft") {
-      return;
-    };
-    if (e.key === "Escape") {
-      console.log("escape");
-      modalClose();
-    };
   
-  };
-  window.addEventListener('keydown', onKeyPress);
-  window.addEventListener('keydown', (e) => {
-      
-    if (e.key === "ArrowRight") {
-      onArrowRightClick();
-    };
-    if (e.key === "ArrowLeft") {
-      onArrowLeftClick();
-    };
-  })
   // refs.lightBox.addEventListener('keydown', onArrowRightClick);
   // refs.lightBox.addEventListener('keydown', onArrowLeftClick);
   return modalPicture = newPicture;
@@ -148,24 +128,44 @@ const imageData = document.querySelectorAll('.gallery__image');
 
 refs.gallery.addEventListener('click', onGalleryClick);
 
-const modalClose = () => {
+const modalClose = (e) => {
   refs.lightBox.classList.remove('is-open');
   
+  // location.reload();
+  
+
   modalPicture.src = '';
   modalPicture.alt = '';
-  modalPicture.dataset.indexNumber = '0';
 };
 refs.overlay.addEventListener('click', modalClose, { once: true });
 refs.closeLightboxBtn.addEventListener('click', modalClose);
 
+const onKeyPress = (e) => {
+    if (e.key !== "Escape" && e.key !== "ArrowRight" && e.key !== "ArrowLeft") {
+      return;
+    };
+    if (e.key === "Escape") {
+      console.log("escape");
+      modalClose();
+    };
+    
+    if (e.key === "ArrowRight") {
+      onArrowRightClick();
+    };
+    if (e.key === "ArrowLeft") {
+      onArrowLeftClick();
+    };
+  };
+  window.addEventListener('keydown', onKeyPress);
 
 function onArrowRightClick() {
-   let newPicture = document.querySelector('.lightbox__image');
-  let number = Number(newPicture.dataset.indexNumber);
-        for (let i = 0; i < imageData.length; i+=1) {
+  let newPicture = modalPicture;
+  console.log(newPicture);
+  let number = Number(modalPicture.dataset.indexNumber);
+        for (let i = number; i < imageData.length; i++) {
           if (newPicture.dataset.indexNumber === number.toString() && number <imageData.length - 1) {
             number += 1;
-            const newImage = imageData[i];
+            const newImage = imageData[`${number}`];
             console.log(newImage);
             newPicture.src = newImage.dataset.source;
             newPicture.alt = newImage.dataset.alt;
@@ -175,11 +175,10 @@ function onArrowRightClick() {
         }
 };
 
-
 function onArrowLeftClick() {
-  let newPicture = document.querySelector('.lightbox__image');
-  let number = Number(newPicture.dataset.indexNumber);
-        for (let i = number; i < imageData.length; i+=1) {
+  let newPicture = modalPicture;
+  let number = Number(modalPicture.dataset.indexNumber);
+        for (let i = number; i < imageData.length; i++) {
           if (newPicture.dataset.indexNumber === number.toString() && number >= 1) {
             number -= 1;
             const newImage = imageData[`${number}`];
